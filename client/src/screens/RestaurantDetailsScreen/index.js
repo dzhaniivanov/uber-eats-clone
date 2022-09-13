@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { View, FlatList, ActivityIndicator } from "react-native";
+import {
+  View,
+  FlatList,
+  ActivityIndicator,
+  Pressable,
+  Text,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import DishListItem from "../../components/DishListItem";
 import Header from "./Header";
@@ -18,7 +24,11 @@ const RestaurantDetailsPage = () => {
 
   const id = route.params?.id;
 
-  const { setRestaurant: setBasketRestaurant } = useBasketContext();
+  const {
+    setRestaurant: setBasketRestaurant,
+    basket,
+    basketDishes,
+  } = useBasketContext();
 
   useEffect(() => {
     if (!id) {
@@ -55,6 +65,16 @@ const RestaurantDetailsPage = () => {
         color="white"
         style={styles.iconContainer}
       />
+      {basket && (
+        <Pressable
+          onPress={()=>navigation.navigate("Basket")}
+          style={styles.button}
+        >
+          <Text style={styles.buttonText}>
+            Open Basket ({basketDishes.length})
+          </Text>
+        </Pressable>
+      )}
     </View>
   );
 };
