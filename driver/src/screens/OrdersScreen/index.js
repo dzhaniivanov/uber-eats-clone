@@ -4,7 +4,7 @@ import BottomSheet from "@gorhom/bottom-sheet";
 import orders from "../../../assets/data/orders.json";
 import OrderItem from "../../components/OrderItem";
 
-const OrderScreen = () => {
+const OrdersScreen = () => {
   const bottomSheetRef = useRef(null);
 
   const snapPoints = useMemo(() => ["12%", "95%"], []);
@@ -36,4 +36,4 @@ const OrderScreen = () => {
   );
 };
 
-export default OrderScreen;
+export default OrdersScreen;

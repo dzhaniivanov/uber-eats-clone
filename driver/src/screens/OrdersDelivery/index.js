@@ -7,7 +7,7 @@ import styles from "./styles";
 
 const order = orders[0];
 
-const OrderDelivery = () => {
+const OrdersDelivery = () => {
   const bottomSheetRef = useRef(null);
   const snapPoints = useMemo(() => ["12%", "95%"], []);
 
@@ -54,4 +54,4 @@ const OrderDelivery = () => {
   );
 };
 
-export default OrderDelivery;
+export default OrdersDelivery;
