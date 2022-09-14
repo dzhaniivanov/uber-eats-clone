@@ -1,10 +1,11 @@
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useEffect, useState } from "react";
 import {
   View,
   Text,
   FlatList,
   Dimensions,
   useWindowDimensions,
+  ActivityIndicator,
 } from "react-native";
 import BottomSheet from "@gorhom/bottom-sheet";
 import orders from "../../../assets/data/orders.json";
