@@ -1,4 +1,3 @@
-
 [
   {
     "id": "1",
@@ -16,8 +15,8 @@
       "maxDeliveryTime": 44,
       "rating": 1.5095123177204128,
       "address": "983 Lewis Rapids",
-      "lat": 43.5424647485055,
-      "lng":  27.828438125232255,
+      "lat": 37.808,
+      "lng": -122.417743,
       "createdAt": "2022-04-16T12:03:33.225Z",
       "updatedAt": "2022-04-16T12:05:12.826Z"
     },
@@ -25,8 +24,8 @@
       "id": "1",
       "name": "Vadim",
       "address": "Abc 1",
-      "lat": 46.86190499528364,
-      "lng": 28.54437769418778
+      "lat": 37.771389,
+      "lng": -122.468611
     }
   },
   {
@@ -45,8 +44,8 @@
       "maxDeliveryTime": 44,
       "rating": 1.5095123177204128,
       "address": "983 Lewis Rapids",
-      "lat": 43.5621747465055,
-      "lng": 27.825436125232255,
+      "lat": 46.99190699528364,
+      "lng": 28.66937969418778,
       "createdAt": "2022-04-16T12:03:33.225Z",
       "updatedAt": "2022-04-16T12:05:12.826Z"
     },
@@ -54,7 +53,7 @@
       "id": "2",
       "name": "Lukas",
       "address": "Lithuania 1",
-      "lat": 46.82115499528364,
+      "lat": 46.86110499528364,
       "lng": 28.54497769418778
     }
   },
@@ -70,15 +69,15 @@
     "_deleted": null,
     "Restaurant": {
       "id": "7d7965f7-1b33-4b8c-9bac-0c22bc905030",
-      "name": "Jacobs - DuBuque",
-      "image": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant4.jpeg",
+      "name": "Jacobs",
+      "image": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant3.jpeg",
       "deliveryFee": 0.039448871531492236,
       "minDeliveryTime": 10,
       "maxDeliveryTime": 44,
       "rating": 1.5095123177204128,
       "address": "983 Lewis Rapids",
-      "lat": 43.5624547465055,
-      "lng": 27.828416125232255,
+      "lat": 46.47190999528364,
+      "lng": 28.74937369418778,
       "createdAt": "2022-04-16T12:03:33.225Z",
       "updatedAt": "2022-04-16T12:05:12.826Z"
     },

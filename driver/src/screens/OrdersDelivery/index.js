@@ -18,6 +18,8 @@ const order = orders[0];
 
 const OrdersDelivery = () => {
   const [driverLocation, setDriverLocation] = useState(null);
+  const [totalMinutes, setTotalMinutes] = useState(0);
+  const [totalKm, setTotalKm] = useState(0);
 
   const bottomSheetRef = useRef(null);
   const { width, height } = useWindowDimensions();
@@ -37,6 +39,20 @@ const OrdersDelivery = () => {
         longitude: location.coords.longitude,
       });
     })();
+
+    const foregroundSubscription = Location.watchPositionAsync(
+      {
+        accuracy: Location.Accuracy.High,
+        distanceInterval: 100,
+      },
+      (updatedLocation) => {
+        setDriverLocation({
+          latitude: updatedLocation.coords.latitude,
+          longitude: updatedLocation.coords.longitude,
+        });
+      }
+    );
+    return foregroundSubscription;
   }, []);
 
   if (!driverLocation) {
@@ -65,6 +81,10 @@ const OrdersDelivery = () => {
           ]}
           strokeColor="#3fc060"
           apikey="AIzaSyBkOvdc235VZUzcIrGR4CabAZX8PGiBNRQ"
+          onReady={(result) => {
+            setTotalMinutes(result.duration);
+            setTotalKm(result.distance);
+          }}
         />
         <Marker
           coordinate={{
@@ -101,14 +121,18 @@ const OrdersDelivery = () => {
         handleIndicatorStyle={styles.handleIndicatorStyle}
       >
         <View style={styles.handleIndicatorContainer}>
-          <Text style={styles.routeDetailsText}>14 min</Text>
+          <Text style={styles.routeDetailsText}>
+            {totalMinutes.toFixed(1)} min
+          </Text>
           <FontAwesome5
             name="shopping-bag"
             size={30}
             color="#3fc060"
             style={{ marginHorizontal: 10 }}
           />
-          <Text style={{ fontSize: 25, letterSpacing: 1 }}>5 km</Text>
+          <Text style={{ fontSize: 25, letterSpacing: 1 }}>
+            {totalKm.toFixed(2)} km
+          </Text>
         </View>
         <View style={styles.deliveryDetailsContainer}>
           <Text style={styles.restaurantName}>{order.Restaurant.name}</Text>
