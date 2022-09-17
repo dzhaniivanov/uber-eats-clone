@@ -22,32 +22,56 @@ const OrderContextProvider = ({ children }) => {
 
     DataStore.query(User, fetchedOrder.userID).then(setUser);
 
-    DataStore.query(OrderDish, (od) => od.orderID("eq", fetchedOrder.id)).then(setDishes)
+    DataStore.query(OrderDish, (od) => od.orderID("eq", fetchedOrder.id)).then(
+      setDishes
+    );
   };
 
-  const acceptOrder = () => {
-    DataStore.save(
+  useEffect(() => {
+    if (!order) {
+      return;
+    }
+
+    const subsription = DataStore.observe(Order, order.id).subscribe(
+      ({ opType, element }) => {
+        if (opType === "UPDATE") {
+          console.log("order has been updated", element);
+          setOrder(element);
+        }
+      }
+    );
+
+    return () => subsription.unsubscribe();
+  }, [order?.id]);
+
+  const acceptOrder = async () => {
+    const updatedOrder = await DataStore.save(
       Order.copyOf(order, (updated) => {
         updated.status = "ACCEPTED";
         updated.Courier = dbCourier;
       })
-    ).then(setOrder);
+    );
+
+    setOrder(updatedOrder);
   };
 
-  const completeOrder = () => {
-    DataStore.save(
+  const completeOrder = async () => {
+    const updatedOrder = await DataStore.save(
       Order.copyOf(order, (updated) => {
         updated.status = "COMPLETED";
       })
-    ).then(setOrder);
+    );
+    setOrder(updatedOrder);
   };
 
-  const pickUpOrder = () => {
-    DataStore.save(
+  const pickUpOrder = async () => {
+    const updatedOrder = await DataStore.save(
       Order.copyOf(order, (updated) => {
         updated.status = "PICKED_UP";
       })
-    ).then(setOrder);
+    );
+    console.log(updatedOrder);
+    setOrder(updatedOrder);
   };
 
   return (

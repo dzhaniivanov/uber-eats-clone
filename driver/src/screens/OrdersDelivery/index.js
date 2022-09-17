@@ -3,7 +3,7 @@ import { View, useWindowDimensions, ActivityIndicator } from "react-native";
 import styles from "./styles";
 import MapView from "react-native-maps";
 import * as Location from "expo-location";
-import {  Ionicons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import MapViewDirections from "react-native-maps-directions";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useOrderContext } from "../../context/OrderContext";
@@ -62,6 +62,15 @@ const OrdersDelivery = () => {
     return foregroundSubscription;
   }, []);
 
+  const zoomInOnDriver = () => {
+    mapRef.current?.animateToRegion({
+      latitude: driverLocation.latitude,
+      longitude: driverLocation.longitude,
+      latitudeDelta: 0.01,
+      longitudeDelta: 0.01,
+    });
+  };
+
   const restaurantLocation = {
     latitude: order?.Restaurant?.lat,
     longitude: order?.Restaurant?.lng,
@@ -109,7 +118,11 @@ const OrdersDelivery = () => {
         <CustomMarker data={order.Restaurant} type="RESTAURANT" />
         <CustomMarker data={user} type="USER" />
       </MapView>
-      <BottomSheetDetails totalMinutes={totalMinutes} totalKm={totalKm} />
+      <BottomSheetDetails
+        totalMinutes={totalMinutes}
+        totalKm={totalKm}
+        onAccepted={zoomInOnDriver}
+      />
       {order.status === "READY_FOR_PICKUP" && (
         <Ionicons
           onPress={() => navigation.goBack()}
