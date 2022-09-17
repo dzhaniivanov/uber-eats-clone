@@ -1,54 +1,59 @@
-import { Text, TextInput, StyleSheet, Button, Alert } from "react-native";
+import {
+  Text,
+  TextInput,
+  StyleSheet,
+  Button,
+  Alert,
+  View,
+  Pressable,
+} from "react-native";
 import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Auth, DataStore } from "aws-amplify";
-import { User } from "../../models";
+import { Courier, TransportationModes } from "../../models";
 import { useAuthContext } from "../../context/AuthContext";
 import { useNavigation } from "@react-navigation/native";
+import { MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
 
 const ProfileScreen = () => {
-  const { sub, setDbUser, dbUser } = useAuthContext();
-  const [name, setName] = useState(dbUser?.name || "");
-  const [address, setAddress] = useState(dbUser?.address || "");
-  const [lat, setLat] = useState(dbUser?.lat + "" || "0");
-  const [lng, setLng] = useState(dbUser?.lng + "" || "0");
+  const { dbCourier, sub, setDbCourier } = useAuthContext();
+  const [name, setName] = useState(dbCourier?.name || "");
+  const [lat, setLat] = useState(dbCourier?.lat + "" || "0");
+  const [lng, setLng] = useState(dbCourier?.lng + "" || "0");
+  const [transporationMode, setTransporationMode] = useState(
+    TransportationModes.DRIVING
+  );
   const navigation = useNavigation();
 
   const onSave = async () => {
-    if (dbUser) {
-      await updateUser();
+    if (dbCourier) {
+      await updateCourier();
     } else {
-      await createUser();
+      await createCourier();
     }
     navigation.goBack();
   };
 
-  const updateUser = async () => {
-    const user = await DataStore.save(
-      User.copyOf(dbUser, (updated) => {
+  const updateCourier = async () => {
+    const courier = await DataStore.save(
+      Courier.copyOf(dbCourier, (updated) => {
         updated.name = name;
-        updated.address = address;
-        updated.lat = parseFloat(lat);
-        updated.lng = parseFloat(lng);
-        sub;
+        updated.transportationMode = transporationMode;
       })
     );
-    setDbUser(user);
+    setDbCourier(courier);
   };
 
-  const createUser = async () => {
+  const createCourier = async () => {
     try {
-      const user = await DataStore.save(
-        new User({
+      const courier = await DataStore.save(
+        new Courier({
           name,
-          address,
-          lat: parseFloat(lat),
-          lng: parseFloat(lng),
           sub,
+          transporationMode,
         })
       );
-      console.log(user);
-      setDbUser(user);
+      setDbCourier(courier);
     } catch (error) {
       Alert.alert("Error", error.message);
     }
@@ -63,25 +68,41 @@ const ProfileScreen = () => {
         placeholder="Name"
         style={styles.input}
       />
-      <TextInput
-        value={address}
-        onChangeText={setAddress}
-        placeholder="Address"
-        style={styles.input}
-      />
-      <TextInput
-        value={lat}
-        onChangeText={setLat}
-        placeholder="Latitude"
-        style={styles.input}
-        keyboardType="numeric"
-      />
-      <TextInput
-        value={lng}
-        onChangeText={setLng}
-        placeholder="Longitude"
-        style={styles.input}
-      />
+      <View style={{ flexDirection: "row" }}>
+        <Pressable
+          onPress={() => setTransporationMode(TransportationModes.BICYCLING)}
+          style={{
+            backgroundColor:
+              transporationMode === TransportationModes.BICYCLING
+                ? "#3fc060"
+                : "white",
+
+            margin: 10,
+            padding: 10,
+            borderWidth: 1,
+            borderColor: "gray",
+            borderRadius: 10,
+          }}
+        >
+          <MaterialIcons name="pedal-bike" size={40} color="black" />
+        </Pressable>
+        <Pressable
+          onPress={() => setTransporationMode(TransportationModes.DRIVING)}
+          style={{
+            backgroundColor:
+              transporationMode === TransportationModes.DRIVING
+                ? "#3fc060"
+                : "white",
+            margin: 10,
+            padding: 10,
+            borderWidth: 1,
+            borderColor: "gray",
+            borderRadius: 10,
+          }}
+        >
+          <FontAwesome5 name="car" size={40} color="black" />
+        </Pressable>
+      </View>
       <Button onPress={onSave} title="Save" />
       <Text
         onPress={() => Auth.signOut()}

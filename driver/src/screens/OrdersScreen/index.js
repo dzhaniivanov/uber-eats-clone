@@ -1,23 +1,26 @@
 import { useRef, useMemo, useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  Dimensions,
-  useWindowDimensions,
-  ActivityIndicator,
-} from "react-native";
-import BottomSheet from "@gorhom/bottom-sheet";
-import orders from "../../../assets/data/orders.json";
+import { View, Text, FlatList, useWindowDimensions } from "react-native";
+import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import OrderItem from "../../components/OrderItem";
 import MapView, { Marker } from "react-native-maps";
 import { Entypo } from "@expo/vector-icons";
+import { DataStore } from "aws-amplify";
+import { Order } from "../../models";
+import CustomMarker from "../../components/CustomMarker";
 
 const OrdersScreen = () => {
+  const [orders, setOrders] = useState([]);
   const bottomSheetRef = useRef(null);
   const { width, height } = useWindowDimensions();
 
   const snapPoints = useMemo(() => ["12%", "95%"], []);
+
+  useEffect(() => {
+    DataStore.query(Order, (order) =>
+      order.status("eq", "READY_FOR_PICKUP")
+    ).then(setOrders);
+  }, []);
+  console.log(orders);
 
   return (
     <View style={{ backgroundColor: "lightblue", flex: "1" }}>
@@ -30,21 +33,11 @@ const OrdersScreen = () => {
         followsUserLocation
       >
         {orders.map((order) => (
-          <Marker
+          <CustomMarker
             key={order.id}
-            coordinate={{
-              latitude: order.Restaurant.lat,
-              longitude: order.Restaurant.lng,
-            }}
-            title={order.Restaurant.name}
-            description={order.Restaurant.address}
-          >
-            <View
-              style={{ backgroundColor: "green", padding: 5, borderRadius: 20 }}
-            >
-              <Entypo name="shop" size={24} color="white" />
-            </View>
-          </Marker>
+            data={order.Restaurant}
+            type="RESTAURANT"
+          />
         ))}
       </MapView>
       <BottomSheet ref={bottomSheetRef} snapPoints={snapPoints}>
@@ -63,7 +56,7 @@ const OrdersScreen = () => {
             Available Orders: {orders.length}
           </Text>
         </View>
-        <FlatList
+        <BottomSheetFlatList
           data={orders}
           renderItem={({ item }) => <OrderItem order={item} />}
         />
